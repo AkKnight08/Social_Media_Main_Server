@@ -3,8 +3,26 @@
   <title>
     <%=title%>
   </title>
+  <link rel="stylesheet" href="/css/home.css">
     </head>
     <body>
         <h1> Hi Akshay Home</h1>
+        <ul>
+        <% for(let i of clist){%>
+        <li>
+            <p>
+            <%=i.name%>
+            <%=i.roll%>
+            <a href="/dc/?roll=<%=i.roll%>">Delete</a>
+          </p>
+        </li>
+        <%}%>
+        </ul>
+        <form action="/create" method="post">
+          <input type="text" placeholder="Name" name="name" required>
+          <input type="text" placeholder="Roll" name="roll" required>
+          <button type="submit"> Submit </button>
+        </form>
+        <script src="/js/home.js"></script>
     </body>
 </html>
