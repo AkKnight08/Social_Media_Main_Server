@@ -2,6 +2,11 @@ const express = require("express");
 const path = require("path");
 const port = 8000;
 const app = express();
+const expressLayouts = require('express-ejs-layouts');
+
+app.use(expressLayouts);
+app.set('layout extractStyles',true);
+app.set("layout extractScripts", true);
 
 const db = require("./config/mongoose");
 const Contact = require("./models/cschema");
