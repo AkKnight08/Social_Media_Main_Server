@@ -1,24 +1,33 @@
 const User = require("../models/user");
 module.exports.profile = async function (req, res) {
   try {
-    if (req.cookies.user_id) {
-      const user = await User.findById(req.cookies.user_id);
+    // Check if the user is authenticated
+    if (req.isAuthenticated()) {
+      // Use the user's ID from the session (passport sets this up)
+      const userId = req.user._id;
+
+      // Retrieve the user based on the ID
+      const user = await User.findById(userId);
+
       if (user) {
-        return res.render("profile", {
+        return res.render("users_profile", {
           title: "User-Profile",
           user: user,
         });
       } else {
+        console.log("1");
         return res.redirect("/users/sign-in");
       }
     } else {
+      console.log("User not authenticated");
       return res.redirect("/users/sign-in");
     }
-  } catch (error) {
-    console.error("Error in profile:", error);
+  } catch (err) {
+    console.error("Error in profile:", err);
     return res.redirect("/users/sign-in");
   }
 };
+
 module.exports.signIn = function (req, res) {
   return res.render("user_sign_in", {
     title: "Sign in | SecretSocial",
@@ -54,16 +63,14 @@ module.exports.create = async function (req, res) {
   }
 };
 module.exports.createSession = async function (req, res) {
-  try {
-    const user = await User.findOne({ email: req.body.email });
-    if (user) {
-      if (user.password != req.body.password) {
-        return res.redirect("back");
-      }
-      res.cookie("user_id", user.id); // Set the user_id cookie
-      return res.redirect("/users/profile");
+  return res.redirect("/users/profile");
+};
+
+module.exports.destroySession = function (req, res) {
+  req.logout(function (err) {
+    if (err) {
+      console.log("Error logging out:", err);
     }
-  } catch {
-    return res.redirect("back");
-  }
+    return res.redirect("/users/sign-up");
+  });
 };
