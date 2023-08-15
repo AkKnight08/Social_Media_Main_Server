@@ -1,26 +1,27 @@
 const express = require("express");
+const cookieParser = require("cookie-parser");
 const path = require("path");
 const port = 8000;
 const app = express();
-const expressLayouts = require('express-ejs-layouts');
+const expressLayouts = require("express-ejs-layouts");
+const db = require("./config/mongoose");
+
+app.use(express.urlencoded({ extended: false })); // Added the { extended: false } option
+app.use(cookieParser());
+app.use(express.static("assets"));
 
 app.use(expressLayouts);
-app.set('layout extractStyles',true);
+app.set("layout extractStyles", true);
 app.set("layout extractScripts", true);
 
-const db = require("./config/mongoose");
-const Contact = require("./models/cschema");
-app.use('/',require('./routes'));
-
+app.use("/", require("./routes")); // Use routes from the './routes' directory
 app.set("view engine", "ejs");
-app.set("views", "./views");
-app.set("views", path.join(__dirname, "views"));
-app.use(express.urlencoded());
-app.use(express.static("assets"));
+app.set("views", path.join(__dirname, "views")); // Use path.join to correctly set the views directory
 
 app.listen(port, function (err) {
   if (err) {
-    console.log("Error in Connecting to the Server");
+    console.log("Error in connecting to the server:", err); // Log the actual error
     return;
-  } else console.log("Server Connected Sucessfully to the Port: ", port);
+  }
+  console.log("Server connected successfully to port:", port);
 });
