@@ -17,7 +17,11 @@
         <ul>
           <%for(let post of posts){%>
           <li>
-            <%=post.content%>
+            <% if (locals.user && locals.user.id == post.user.id) { %>
+            <small>
+              <a href="/posts/destroy/<%=post.id %>">Delete Post</a>
+            </small>
+            <% } %> <%=post.content%>
             <small> <%=post.user.name%> </small>
             <div class="post-comments">
               <%if(locals.user){%>
@@ -28,13 +32,18 @@
                   placeholder="Write ypu comment for post here"
                   required
                 />
-                <input type="hidden" name="post"value="<%=post._id%>" />
+                <input type="hidden" name="post" value="<%=post._id%>" />
                 <input type="submit" value="Add comment" />
               </form>
               <%}%>
               <ul>
                 <%for(let comment of post.comments){%>
                 <li>
+                   <% if (locals.user && locals.user.id == comment.user.id) { %>
+            <small>
+              <a href="/comments/destroy/<%=comment.id %>">Delete Comment</a>
+            </small>
+            <% } %>
                   <%=comment.content%>
                   <small> <%=comment.user.name%> </small>
                 </li>
