@@ -8,13 +8,13 @@ module.exports.profile = async function (req, res) {
 
       // Retrieve the user based on the ID
       const user = await User.findById(userId);
-      const user2=await User.findById(req.params.id);
+      const user2 = await User.findById(req.params.id);
 
       if (user) {
         return res.render("users_profile", {
           title: "User-Profile",
           user: user,
-          profile_user:user2
+          profile_user: user2,
         });
       } else {
         console.log("1");
@@ -27,6 +27,20 @@ module.exports.profile = async function (req, res) {
   } catch (err) {
     console.error("Error in profile:", err);
     return res.redirect("/users/sign-in");
+  }
+};
+
+module.exports.update = async function (req, res) {
+  try {
+    if (req.user.id == req.params.id) {
+      await User.findByIdAndUpdate(req.params.id, req.body);
+      return res.redirect("back");
+    } else {
+      return res.status(401).send("Unauthorized");
+    }
+  } catch (err) {
+    console.error("Error in updating user:", err);
+    return res.redirect("back");
   }
 };
 
