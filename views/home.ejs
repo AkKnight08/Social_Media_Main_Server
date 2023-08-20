@@ -55,6 +55,14 @@
         </ul>
       </div>
     </section>
+    <section id="user-friends">
+      <h3> Friends</h3>
+      <%for(let u of all_users){%>
+        <p>
+          <a href="/users/profile/<%=u.id%>"><%=u.name%></a>
+        </p>
+      <%}%>
+    </section>
     <script src="/js/home.js"></script>
   </body>
 </html>

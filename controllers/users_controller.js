@@ -8,11 +8,13 @@ module.exports.profile = async function (req, res) {
 
       // Retrieve the user based on the ID
       const user = await User.findById(userId);
+      const user2=await User.findById(req.params.id);
 
       if (user) {
         return res.render("users_profile", {
           title: "User-Profile",
           user: user,
+          profile_user:user2
         });
       } else {
         console.log("1");
@@ -63,7 +65,7 @@ module.exports.create = async function (req, res) {
   }
 };
 module.exports.createSession = async function (req, res) {
-  return res.redirect("/users/profile");
+  return res.redirect("/");
 };
 
 module.exports.destroySession = function (req, res) {

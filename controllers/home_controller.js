@@ -1,5 +1,5 @@
 const Post = require("../models/post");
-
+const User= require('../models/user');
 module.exports.home = async function (req, res) {
   try {
     // Use the `await` keyword to asynchronously fetch the posts from the database
@@ -12,10 +12,11 @@ module.exports.home = async function (req, res) {
         },
       })
       .exec();
-
+      const user= await User.find({});
     return res.render("home", {
       title: "Home",
       posts: posts,
+      all_users:user
     });
   } catch (err) {
     // Handle the error by logging it and redirecting back
