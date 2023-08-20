@@ -15,6 +15,7 @@ module.exports.create = async function (req, res) {
         });
         await post.comments.push(comment);
         await post.save();
+         req.flash("success", "Commented");
         res.redirect("back");
       } catch (err) {
         res.redirect("back");

@@ -6,7 +6,7 @@ module.exports.create = async function (req, res) {
       content: req.body.content,
       user: req.user._id, // Assuming req.user contains the logged-in user's information
     });
-    console.log("Post created successfully:", post);
+    req.flash('success','Post Published');
     return res.redirect("back");
   } catch {
     return res.redirect("back");
@@ -24,7 +24,7 @@ module.exports.destroy = async function (req, res) {
 
         // Delete associated comments
         await Comment.deleteMany({ post: req.params.id });
-
+          req.flash("success", "Post Deleted");
         return res.redirect("back"); // Redirect back to the previous page
       }
     }
