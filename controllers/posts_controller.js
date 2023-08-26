@@ -1,14 +1,16 @@
 const Post = require("../models/post");
 const Comment = require("../models/comment");
+
 module.exports.create = async function (req, res) {
   try {
-    const newpost = await Post.create({
+    const newPost = await Post.create({
       content: req.body.content,
       user: req.user._id, // Assuming req.user contains the logged-in user's information
     });
-    req.flash('success','Post Published');
+    req.flash("success", "Post Published");
     return res.redirect("back");
-  } catch {
+  } catch (err) {
+    req.flash("error", err.message); // Use err.message to display the error message
     return res.redirect("back");
   }
 };
@@ -17,21 +19,24 @@ module.exports.destroy = async function (req, res) {
   try {
     const post = await Post.findById(req.params.id);
 
-    if (post) {
-      // Ensure you compare the post.user.toString() with req.user.id.toString()
-      if (post.user == req.user.id) {
-        await Post.deleteOne({ _id: req.params.id }); // Use deleteOne() to delete a single document
+    if (post && post.user.toString() === req.user._id.toString()) {
+      // Delete associated comments first
+      await Comment.deleteMany({ post: req.params.id });
 
-        // Delete associated comments
-        await Comment.deleteMany({ post: req.params.id });
-          req.flash("success", "Post Deleted");
-        return res.redirect("back"); // Redirect back to the previous page
-      }
+      // Delete the post itself
+      await Post.deleteOne({ _id: req.params.id });
+
+      req.flash("success", "Post and associated comments deleted");
+    } else if (post) {
+      req.flash("error", "You cannot delete this post!");
+    } else {
+      req.flash("error", "Post not found");
     }
 
-    return res.redirect("back"); // Redirect back if post doesn't exist or user isn't authorized
+    return res.redirect("back");
   } catch (err) {
-    console.log("Error in Deleting post:", err);
+    console.error(err); // Log the error for debugging
+    req.flash("error", err.message);
     return res.redirect("back");
   }
 };

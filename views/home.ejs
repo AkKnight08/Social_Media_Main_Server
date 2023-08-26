@@ -16,13 +16,13 @@
       <div id="post-list-container">
         <ul>
           <%for(let post of posts){%>
-          <li>
+          <li id="post-<%=post._id%>">
             <% if (locals.user && locals.user.id == post.user.id) { %>
             <small>
-              <a href="/posts/destroy/<%=post.id %>">Delete Post</a>
+              <a class="delete-post-button" href="/posts/destroy/<%=post._id%>">Delete Post</a>
             </small>
             <% } %> <%=post.content%>
-            <small> <%=post.user.name%> </small>
+            <small style="color: blueviolet;"> <%=post.user.name%> </small>
             <div class="post-comments">
               <%if(locals.user){%>
               <form action="/comments/create" method="POST">
@@ -36,16 +36,17 @@
                 <input type="submit" value="Add comment" />
               </form>
               <%}%>
-              <ul>
+              <ul id="post-comments-<%=post._id%>">
                 <%for(let comment of post.comments){%>
                 <li>
-                   <% if (locals.user && locals.user.id == comment.user.id) { %>
-            <small>
-              <a href="/comments/destroy/<%=comment.id %>">Delete Comment</a>
-            </small>
-            <% } %>
-                  <%=comment.content%>
-                  <small> <%=comment.user.name%> </small>
+                  <% if (locals.user && locals.user.id == comment.user.id) { %>
+                  <small>
+                    <a href="/comments/destroy/<%=comment.id %>"
+                      >Delete Comment</a
+                    >
+                  </small>
+                  <% } %> <%=comment.content%>
+                  <small style="color: blueviolet;"> <%=comment.user.name%> </small>
                 </li>
                 <%}%>
               </ul>
@@ -56,13 +57,13 @@
       </div>
     </section>
     <section id="user-friends">
-      <h3> Friends</h3>
+      <h3>Friends</h3>
       <%for(let u of all_users){%>
-        <p>
-          <a href="/users/profile/<%=u.id%>"><%=u.name%></a>
-        </p>
+      <p>
+        <a href="/users/profile/<%=u.id%>"><%=u.name%></a>
+      </p>
       <%}%>
     </section>
-    <script src="/js/home.js"></script>
+    <script src="/js/home_posts.js"></script>
   </body>
 </html>

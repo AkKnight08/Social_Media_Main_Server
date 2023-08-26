@@ -4,6 +4,7 @@ module.exports.home = async function (req, res) {
   try {
     // Use the `await` keyword to asynchronously fetch the posts from the database
     const posts = await Post.find({})
+      .sort('-createdAt')
       .populate("user") // populates the user property for each post
       .populate({
         path: "comments", // specifies the path of the comments property
