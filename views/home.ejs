@@ -19,13 +19,15 @@
           <li id="post-<%=post._id%>">
             <% if (locals.user && locals.user.id == post.user.id) { %>
             <small>
-              <a class="delete-post-button" href="/posts/destroy/<%=post._id%>">Delete Post</a>
+              <a class="delete-post-button" href="/posts/destroy/<%=post._id%>"
+                >Delete Post</a
+              >
             </small>
             <% } %> <%=post.content%>
-            <small style="color: blueviolet;"> <%=post.user.name%> </small>
+            <small style="color: rgb(177, 0, 151)"> <%=post.user.name%> </small>
             <div class="post-comments">
               <%if(locals.user){%>
-              <form action="/comments/create" method="POST">
+              <form action="/comments/create" id="new-comm-form" method="POST">
                 <input
                   type="text"
                   name="content"
@@ -36,20 +38,25 @@
                 <input type="submit" value="Add comment" />
               </form>
               <%}%>
-              <ul id="post-comments-<%=post._id%>">
-                <%for(let comment of post.comments){%>
-                <li>
-                  <% if (locals.user && locals.user.id == comment.user.id) { %>
-                  <small>
-                    <a href="/comments/destroy/<%=comment.id %>"
-                      >Delete Comment</a
-                    >
-                  </small>
-                  <% } %> <%=comment.content%>
-                  <small style="color: blueviolet;"> <%=comment.user.name%> </small>
-                </li>
-                <%}%>
-              </ul>
+              <div id="Comm-container">
+                <ul id="post-comments-<%=post._id%>">
+                  <%for(let comment of post.comments){%>
+                  <li id="comment-<%= comment._id %>">
+                    <% if (locals.user && locals.user.id == comment.user.id) {
+                    %>
+                    <small>
+                      <a class="delete-comment-button" href="/comments/destroy/<%=comment.id %>"
+                        >Delete Comment</a
+                      >
+                    </small>
+                    <% } %> <%=comment.content%>
+                    <small style="color: blueviolet">
+                      <%=comment.user.name%>
+                    </small>
+                  </li>
+                  <%}%>
+                </ul>
+              </div>
             </div>
           </li>
           <%}%>
@@ -65,6 +72,6 @@
       <%}%>
     </section>
     <script src="/js/home_posts.js"></script>
-     <script src="/js/home_comments.js"></script>
+    <script src="/js/home_comments.js"></script>
   </body>
 </html>
