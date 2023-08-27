@@ -1,4 +1,6 @@
 const User = require("../models/user");
+const fs = require("fs");
+const path = require("path");
 module.exports.profile = async function (req, res) {
   try {
     // Check if the user is authenticated
@@ -17,7 +19,6 @@ module.exports.profile = async function (req, res) {
           profile_user: user2,
         });
       } else {
-        console.log("1");
         return res.redirect("/users/sign-in");
       }
     } else {
@@ -33,8 +34,38 @@ module.exports.profile = async function (req, res) {
 module.exports.update = async function (req, res) {
   try {
     if (req.user.id == req.params.id) {
-      await User.findByIdAndUpdate(req.params.id, req.body);
-      return res.redirect("back");
+      let user = await User.findById(req.params.id);
+
+      User.uploadedAvatar(req, res, async function (err) {
+        if (err) {
+          console.log("#######Multer Error: ", err);
+        }
+
+        // Update user data
+        user.name = req.body.name;
+        user.email = req.body.email;
+
+        // Check if a new avatar was uploaded
+        if (req.file) {
+          if (user.avatar) {
+            try {
+              // Delete the existing avatar file
+              fs.unlinkSync(path.join(__dirname, "..", user.avatar));
+            } catch (err) {
+              // Handle any errors that might occur during file deletion
+              console.error("Error deleting existing avatar:", err);
+            }
+          }
+
+          // Update the user's avatar to the new uploaded file
+          user.avatar = User.avatarPath + "/" + req.file.filename;
+        }
+
+        // Save the user changes
+        await user.save();
+
+        return res.redirect("back");
+      });
     } else {
       return res.status(401).send("Unauthorized");
     }
@@ -79,7 +110,7 @@ module.exports.create = async function (req, res) {
   }
 };
 module.exports.createSession = async function (req, res) {
-  req.flash('success', 'Logged in Successfully');
+  req.flash("success", "Logged in Successfully");
   return res.redirect("/");
 };
 
