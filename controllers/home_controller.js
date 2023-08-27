@@ -1,26 +1,27 @@
 const Post = require("../models/post");
 const User = require("../models/user");
+
 module.exports.home = async function (req, res) {
   try {
-    // Use the `await` keyword to asynchronously fetch the posts from the database
     const posts = await Post.find({})
-      .sort('-createdAt')
-      .populate("user") // populates the user property for each post
+      .sort("-createdAt")
+      .populate("user")
       .populate({
-        path: "comments", // specifies the path of the comments property
+        path: "comments",
         populate: {
-          path: "user", // specifies the path of the user property in the comments property
+          path: "user",
         },
       })
       .exec();
-    const user = await User.find({});
+
+    const users = await User.find({}); // Changed "user" to "users" for clarity
+
     return res.render("home", {
       title: "Home",
       posts: posts,
-      all_users: user,
+      all_users: users, // Changed "user" to "users" for clarity
     });
   } catch (err) {
-    // Handle the error by logging it and redirecting back
     console.error("Error fetching posts:", err);
     return res.redirect("back");
   }

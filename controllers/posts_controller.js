@@ -5,12 +5,22 @@ module.exports.create = async function (req, res) {
   try {
     const newPost = await Post.create({
       content: req.body.content,
-      user: req.user._id, // Assuming req.user contains the logged-in user's information
+      user: req.user._id,
     });
+
+    if (req.xhr) {
+      return res.status(200).json({
+        data: {
+          post: newPost,
+        },
+        message: "Post Created",
+      });
+    }
+
     req.flash("success", "Post Published");
     return res.redirect("back");
   } catch (err) {
-    req.flash("error", err.message); // Use err.message to display the error message
+    req.flash("error", err.message);
     return res.redirect("back");
   }
 };
@@ -25,6 +35,14 @@ module.exports.destroy = async function (req, res) {
 
       // Delete the post itself
       await Post.deleteOne({ _id: req.params.id });
+      if (req.xhr) {
+        return res.status(200).json({
+          data: {
+            post_id: req.params.id,
+          },
+          message: "Post Deleted",
+        });
+      }
 
       req.flash("success", "Post and associated comments deleted");
     } else if (post) {
