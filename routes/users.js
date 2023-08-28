@@ -15,4 +15,20 @@ router.post(
   userController.createSession
 );
 
+router.get(
+  "/auth/google",
+  passport.authenticate("google", { scope: ["profile", "email"] })
+);
+router.get(
+  "/auth/google/callback",
+  passport.authenticate("google", {
+    failureRedirect: "/users/sign-in",
+    successFlash: "Logged in Using Google",
+    failureFlash: "Failed Log in Using Google",
+  }),
+  userController.createSession
+);
+
+
+
 module.exports = router;
