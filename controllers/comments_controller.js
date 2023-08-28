@@ -1,7 +1,7 @@
 const express = require("express");
 const Comment = require("../models/comment");
 const Post = require("../models/post");
-
+const commentMailer= require('../mailers/comment_mailer');
 module.exports.create = async function (req, res) {
   try {
     const post = await Post.findById(req.body.post);
@@ -13,6 +13,13 @@ module.exports.create = async function (req, res) {
       });
       post.comments.push(comment);
       await post.save();
+
+      // Populate the comment with the user's name and email address
+       await comment
+         .populate("user","name email")
+         .then((populatedComment) => {
+           commentMailer.newComment(populatedComment);
+         });
 
       if (req.xhr) {
         return res.status(200).json({
@@ -32,6 +39,7 @@ module.exports.create = async function (req, res) {
     res.redirect("back");
   }
 };
+
 
 module.exports.destroy = async function (req, res) {
   try {
