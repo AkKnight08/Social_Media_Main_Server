@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
-const User=require('../models/user');
+const User = require("../models/user");
 const Comment = require("../models/comment");
+
 const postSchema = new mongoose.Schema(
   {
     content: {
@@ -9,12 +10,18 @@ const postSchema = new mongoose.Schema(
     },
     user: {
       type: mongoose.Schema.ObjectId,
-      ref: User, // Assuming there's a 'User' model
+      ref: "User", // Assuming there's a 'User' model
     },
     comments: [
       {
         type: mongoose.Schema.ObjectId,
-        ref: Comment,
+        ref: "Comment",
+      },
+    ],
+    likes: [
+      {
+        type: mongoose.Schema.ObjectId,
+        ref: "Like",
       },
     ],
   },

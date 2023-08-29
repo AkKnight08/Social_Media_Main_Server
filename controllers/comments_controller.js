@@ -67,6 +67,10 @@ module.exports.destroy = async function (req, res) {
         },
       });
 
+        await Like.deleteMany({
+          likeable: comment._id,
+          onModel: "Comment",
+        });
       if (req.xhr) {
         return res.status(200).json({
           data: {

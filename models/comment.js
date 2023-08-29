@@ -9,12 +9,18 @@ const commentSchema = new mongoose.Schema(
     },
     user: {
       type: mongoose.Schema.ObjectId,
-      ref:User, // Assuming there's a 'User' model
+      ref: User, // Assuming there's a 'User' model
     },
     post: [
       {
         type: mongoose.Schema.ObjectId,
         ref: Post,
+      },
+    ],
+    likes: [
+      {
+        type: mongoose.Schema.ObjectId,
+        ref: "Like",
       },
     ],
   },
