@@ -1,4 +1,6 @@
 const express = require("express");
+const env=require('./config/environment');
+const logger=require('morgan');
 const cookieParser = require("cookie-parser");
 const path = require("path");
 const port = 8000;
@@ -13,11 +15,20 @@ const passportGoogle= require('./config/passport-google-oauth2-strategy');
 const MongoStore = require("connect-mongo");
 const flash =require('connect-flash');
 const custommware= require('./config/middleware');
+const cors= require('cors');
+const { Logger } = require("sass");
+const io = require("socket.io")(3000);
+
+io.on("connection", (socket) => {
+  console.log(socket.id);
+});
 
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static("assets"));
+app.use(express.static(env.asset_path)); 
 app.use("/uploads", express.static(__dirname + "/uploads"));
+
+app.use(logger(env.morgan.mode,env.morgan.options));
 
 app.use(expressLayouts);
 app.set("layout extractStyles", true);
@@ -26,10 +37,12 @@ app.set("layout extractScripts", true);
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
+
+
 // Set up session middleware
 app.use(
   session({
-    secret: "keyboard cat",
+    secret: env.session_cookie_key,
     saveUninitialized: false,
     resave: false,
     cookie: {
