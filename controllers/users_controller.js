@@ -88,21 +88,21 @@ module.exports.signUp = function (req, res) {
 };
 
 module.exports.create = async function (req, res) {
-  // Check if the password and confirm password match
+
   if (req.body.password !== req.body.c_password) {
     console.log("Hi 36");
     return res.redirect("back");
   }
 
-  // Check if a user with the given email already exists
+  
   try {
     const user = await User.findOne({ email: req.body.email });
     if (!user) {
-      // If user doesn't exist, create a new user
+     
       const newuser = await User.create(req.body);
       return res.redirect("/users/sign-in");
     } else {
-      // If user with the email already exists, redirect to sign-in page
+      
       return res.redirect("/users/sign-in");
     }
   } catch (err) {
